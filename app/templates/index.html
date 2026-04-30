@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Benchmark — PDF Data Extractor</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<!-- ── Sidebar ───────────────────────────────────────────────────────── -->
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Sessions</h2>
+    <button id="newSessionBtn" class="btn btn-sm">+ New</button>
+  </div>
+  <div id="sessionList" class="session-list"></div>
+  <div class="sidebar-section">
+    <h3>Uploaded Files</h3>
+    <ul id="fileList" class="file-list"></ul>
+  </div>
+  <div class="sidebar-section">
+    <h3>Chat History</h3>
+    <ul id="chatHistory" class="chat-list"></ul>
+  </div>
+</aside>
+
+<!-- ── Main Content ──────────────────────────────────────────────────── -->
+<main class="main-content">
+  <header class="top-bar">
+    <button id="sidebarToggle" class="btn btn-icon">☰</button>
+    <h1>RAG Benchmark <span class="accent">PDF Extractor</span></h1>
+  </header>
+
+  <!-- Upload Section -->
+  <section class="card" id="uploadSection">
+    <h2>1 · Upload PDFs</h2>
+    <div class="upload-area" id="dropZone">
+      <p>Drop PDF files here or <label class="link" for="fileInput">browse</label></p>
+      <input type="file" id="fileInput" multiple accept=".pdf" hidden>
+    </div>
+    <div class="param-grid">
+      <div class="param">
+        <label>Text Chunk Size</label>
+        <input type="number" id="textChunkSize" value="512" min="64" max="4096">
+      </div>
+      <div class="param">
+        <label>Text Overlap</label>
+        <input type="number" id="textOverlap" value="64" min="0" max="512">
+      </div>
+      <div class="param">
+        <label>Image Chunk Size</label>
+        <input type="number" id="imageChunkSize" value="256" min="64" max="2048">
+      </div>
+    </div>
+    <button id="uploadBtn" class="btn btn-primary" disabled>Upload &amp; Index</button>
+    <div id="uploadStatus" class="status"></div>
+  </section>
+
+  <!-- Query Section -->
+  <section class="card" id="querySection">
+    <h2>2 · Query &amp; Compare Models</h2>
+    <div class="param-grid">
+      <div class="param span-2">
+        <label>Select Models</label>
+        <div id="modelCheckboxes" class="checkbox-grid">
+          {% for m in models %}
+          <label class="cb-label">
+            <input type="checkbox" name="model" value="{{ m.id }}">
+            <span>{{ m.name }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="param">
+        <label>Top-K</label>
+        <input type="number" id="topK" value="5" min="1" max="50">
+      </div>
+      <div class="param">
+        <label>Cosine Threshold</label>
+        <input type="number" id="cosineThreshold" value="0.0" min="0" max="1" step="0.05">
+      </div>
+      <div class="param">
+        <label>Temperature</label>
+        <input type="number" id="temperature" value="0.3" min="0" max="2" step="0.1">
+      </div>
+      <div class="param">
+        <label class="cb-label">
+          <input type="checkbox" id="runBenchmark">
+          <span>Run Benchmark</span>
+        </label>
+      </div>
+    </div>
+    <div class="query-row">
+      <textarea id="queryInput" placeholder="Enter your question …" rows="3"></textarea>
+      <button id="queryBtn" class="btn btn-primary" disabled>Send</button>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  <div id="resultsArea"></div>
+
+  <!-- Benchmark Section -->
+  <section class="card" id="benchmarkSection">
+    <h2>3 · Full Benchmark Run</h2>
+    <p class="muted">Runs all extracted ground-truth Q&amp;A pairs against a selected model.</p>
+    <div class="param-grid">
+      <div class="param">
+        <label>Model</label>
+        <select id="benchModel">
+          {% for m in models %}
+          <option value="{{ m.id }}">{{ m.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="param">
+        <label>Max Questions</label>
+        <input type="number" id="maxQuestions" value="10" min="1" max="100">
+      </div>
+    </div>
+    <button id="benchBtn" class="btn btn-primary" disabled>Run Benchmark</button>
+    <div id="benchResults"></div>
+  </section>
+</main>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
