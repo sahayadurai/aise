@@ -18,6 +18,9 @@ EMBEDDING_MODEL     = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", 8000))
 
+# Database Configuration
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/rag_benchmark")
+
 AVAILABLE_MODELS = [
     {"id": "openai/gpt-4o",                "name": "GPT-4o"},
     {"id": "openai/gpt-4o-mini",           "name": "GPT-4o Mini"},
