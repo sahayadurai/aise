@@ -25,75 +25,6 @@
   const queryBtn   = $("#queryBtn");
   const resultsArea = $("#resultsArea");
 
-  const modelSelect = $("#modelSelect");
-  const modelSearch = $("#modelSearch");
-  const modelDropdown = $("#modelDropdown");
-  const selectedModelsDisplay = $("#selectedModels");
-
-  // ── Searchable Multiselect Dropdown ─────────────────────────────────────
-  function updateSelectedDisplay() {
-    const selected = [...modelSelect.selectedOptions].map(opt => opt.value);
-    selectedModelsDisplay.innerHTML = "";
-    selected.forEach(val => {
-      const option = [...modelSelect.options].find(o => o.value === val);
-      if (option) {
-        const tag = document.createElement("div");
-        tag.className = "model-tag";
-        tag.innerHTML = `${option.text} <button type="button" data-value="${val}">×</button>`;
-        tag.querySelector("button").addEventListener("click", () => {
-          modelSelect.value = null;
-          [...modelSelect.options].forEach(o => {
-            if (o.value === val) o.selected = false;
-          });
-          populateDropdown();
-          updateSelectedDisplay();
-        });
-        selectedModelsDisplay.appendChild(tag);
-      }
-    });
-  }
-
-  function populateDropdown() {
-    const options = [...modelSelect.options];
-    const searchTerm = modelSearch.value.toLowerCase();
-    const selected = [...modelSelect.selectedOptions].map(opt => opt.value);
-    
-    modelDropdown.innerHTML = "";
-    options
-      .filter(opt => opt.text.toLowerCase().includes(searchTerm) && opt.value)
-      .forEach(opt => {
-        const div = document.createElement("div");
-        div.className = "dropdown-item";
-        const isSelected = selected.includes(opt.value);
-        if (isSelected) div.classList.add("selected");
-        div.textContent = opt.text;
-        div.addEventListener("click", () => {
-          if (isSelected) {
-            opt.selected = false;
-            div.classList.remove("selected");
-          } else {
-            opt.selected = true;
-            div.classList.add("selected");
-          }
-          updateSelectedDisplay();
-        });
-        modelDropdown.appendChild(div);
-      });
-  }
-
-  modelSearch.addEventListener("focus", () => {
-    populateDropdown();
-    modelDropdown.classList.add("active");
-  });
-
-  modelSearch.addEventListener("input", populateDropdown);
-
-  document.addEventListener("click", (e) => {
-    if (!e.target.closest(".searchable-dropdown-wrapper")) {
-      modelDropdown.classList.remove("active");
-    }
-  });
-
   // ── Slider & Input Sync ─────────────────────────────────────────────────
   const sliderPairs = [
     { slider: "#topKSlider", input: "#topK" },
@@ -179,7 +110,7 @@
     const query = queryInput.value.trim();
     if (!query || !currentSession) return;
 
-    const selectedModels = [...modelSelect.selectedOptions].map(opt => opt.value);
+    const selectedModels = $$('input[name="model"]:checked').map(cb => cb.value);
     if (!selectedModels.length) { alert("Select at least one model"); return; }
 
     queryBtn.disabled = true;

@@ -62,15 +62,13 @@
     <div class="param-grid">
       <div class="param span-2">
         <label>Select Model</label>
-        <div class="searchable-dropdown-wrapper">
-          <input type="text" id="modelSearch" class="model-search" placeholder="Search models …">
-          <select id="modelSelect" multiple hidden>
-            {% for m in models %}
-            <option value="{{ m.id }}">{{ m.name }}</option>
-            {% endfor %}
-          </select>
-          <div id="modelDropdown" class="dropdown-list"></div>
-          <div id="selectedModels" class="selected-models-display"></div>
+        <div id="modelCheckboxes" class="checkbox-grid">
+          {% for m in models %}
+          <label class="cb-label">
+            <input type="checkbox" name="model" value="{{ m.id }}">
+            <span>{{ m.name }}</span>
+          </label>
+          {% endfor %}
         </div>
       </div>
     </div>

@@ -87,30 +87,8 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);
 .bench-table th{background:var(--bg)}
 
 /* ── Searchable Dropdown ──────────────────────────────────────────────── */
-.searchable-dropdown-wrapper{position:relative}
-.model-search{width:100%;padding:.4rem .5rem;border:1px solid var(--border);
-              border-radius:var(--radius);font-size:.9rem;margin-bottom:.25rem}
-#modelSelect{display:none}
-.dropdown-list{position:absolute;top:100%;left:0;right:0;background:var(--surface);
-               border:1px solid var(--border);border-radius:var(--radius);
-               max-height:200px;overflow-y:auto;z-index:100;
-               display:none;box-shadow:0 4px 6px rgba(0,0,0,.1)}
-.dropdown-list.active{display:block}
-.dropdown-item{padding:.5rem .75rem;cursor:pointer;font-size:.9rem;display:flex;align-items:center}
-.dropdown-item:hover{background:var(--accent-light)}
-.dropdown-item::before{content:"";display:inline-block;width:16px;height:16px;
-                       margin-right:.5rem;border:1px solid var(--border);border-radius:3px;
-                       background:#fff}
-.dropdown-item.selected::before{background:var(--accent);border-color:var(--accent);
-                                content:"[OK]";font-size:.7rem;color:#fff;
-                                display:flex;align-items:center;justify-content:center}
-.selected-models-display{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
-.model-tag{display:inline-flex;align-items:center;gap:.4rem;
-           background:var(--accent-light);color:var(--accent);
-           padding:.3rem .6rem;border-radius:12px;font-size:.85rem;font-weight:500}
-.model-tag button{background:none;border:none;color:var(--accent);
-                  cursor:pointer;font-size:1rem;padding:0;line-height:1;display:flex}
-.model-tag button:hover{color:var(--danger)}
+.checkbox-grid{display:flex;flex-wrap:wrap;gap:.5rem}
+.cb-label{display:flex;align-items:center;gap:.3rem;font-size:.85rem;cursor:pointer}
 
 /* ── Slider ───────────────────────────────────────────────────────────── */
 .param-with-slider{display:flex;flex-direction:column}
