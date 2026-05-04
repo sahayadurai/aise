@@ -25,29 +25,57 @@
   const queryBtn   = $("#queryBtn");
   const resultsArea = $("#resultsArea");
 
-  const benchBtn     = $("#benchBtn");
-  const benchResults = $("#benchResults");
-
   const modelSelect = $("#modelSelect");
   const modelSearch = $("#modelSearch");
   const modelDropdown = $("#modelDropdown");
+  const selectedModelsDisplay = $("#selectedModels");
 
-  // ── Searchable Dropdown ─────────────────────────────────────────────────
+  // ── Searchable Multiselect Dropdown ─────────────────────────────────────
+  function updateSelectedDisplay() {
+    const selected = [...modelSelect.selectedOptions].map(opt => opt.value);
+    selectedModelsDisplay.innerHTML = "";
+    selected.forEach(val => {
+      const option = [...modelSelect.options].find(o => o.value === val);
+      if (option) {
+        const tag = document.createElement("div");
+        tag.className = "model-tag";
+        tag.innerHTML = `${option.text} <button type="button" data-value="${val}">×</button>`;
+        tag.querySelector("button").addEventListener("click", () => {
+          modelSelect.value = null;
+          [...modelSelect.options].forEach(o => {
+            if (o.value === val) o.selected = false;
+          });
+          populateDropdown();
+          updateSelectedDisplay();
+        });
+        selectedModelsDisplay.appendChild(tag);
+      }
+    });
+  }
+
   function populateDropdown() {
-    const options = [...modelSelect.options].slice(1);
+    const options = [...modelSelect.options];
     const searchTerm = modelSearch.value.toLowerCase();
+    const selected = [...modelSelect.selectedOptions].map(opt => opt.value);
+    
     modelDropdown.innerHTML = "";
     options
-      .filter(opt => opt.text.toLowerCase().includes(searchTerm))
+      .filter(opt => opt.text.toLowerCase().includes(searchTerm) && opt.value)
       .forEach(opt => {
         const div = document.createElement("div");
         div.className = "dropdown-item";
-        if (opt.value === modelSelect.value) div.classList.add("selected");
+        const isSelected = selected.includes(opt.value);
+        if (isSelected) div.classList.add("selected");
         div.textContent = opt.text;
         div.addEventListener("click", () => {
-          modelSelect.value = opt.value;
-          modelSearch.value = opt.text;
-          modelDropdown.classList.remove("active");
+          if (isSelected) {
+            opt.selected = false;
+            div.classList.remove("selected");
+          } else {
+            opt.selected = true;
+            div.classList.add("selected");
+          }
+          updateSelectedDisplay();
         });
         modelDropdown.appendChild(div);
       });
@@ -133,7 +161,6 @@
       ).join("<br>");
       uploadStatus.innerHTML = summary;
       queryBtn.disabled = false;
-      benchBtn.disabled = false;
       refreshSidebar();
     } catch (e) {
       uploadStatus.className = "status error";
@@ -152,8 +179,8 @@
     const query = queryInput.value.trim();
     if (!query || !currentSession) return;
 
-    const selectedModel = $("#modelSelect").value;
-    if (!selectedModel) { alert("Select a model"); return; }
+    const selectedModels = [...modelSelect.selectedOptions].map(opt => opt.value);
+    if (!selectedModels.length) { alert("Select at least one model"); return; }
 
     queryBtn.disabled = true;
     resultsArea.innerHTML = '<div class="card"><span class="loading"></span> Querying models …</div>';
@@ -161,7 +188,7 @@
     const fd = new FormData();
     fd.append("query", query);
     fd.append("session_id", currentSession);
-    fd.append("models", selectedModel);
+    fd.append("models", selectedModels.join(","));
     fd.append("top_k", $("#topK").value);
     fd.append("cosine_threshold", $("#cosineThreshold").value);
     fd.append("temperature", $("#temperature").value);
@@ -221,42 +248,6 @@
     </table>`;
   }
 
-  // ── Full Benchmark ──────────────────────────────────────────────────────
-  benchBtn.addEventListener("click", async () => {
-    if (!currentSession) return;
-    benchBtn.disabled = true;
-    benchResults.innerHTML = '<span class="loading"></span> Running full benchmark …';
-
-    const fd = new FormData();
-    fd.append("session_id", currentSession);
-    fd.append("model", $("#benchModel").value);
-    fd.append("top_k", $("#topK").value);
-    fd.append("cosine_threshold", $("#cosineThreshold").value);
-    fd.append("temperature", $("#temperature").value);
-    fd.append("max_questions", $("#maxQuestions").value);
-
-    try {
-      const resp = await fetch("/api/benchmark", { method: "POST", body: fd });
-      const data = await resp.json();
-      if (!resp.ok) throw new Error(data.detail || "Benchmark failed");
-
-      let html = `<h3>Aggregate Results (${data.num_questions} questions)</h3>`;
-      html += `<table class="bench-table"><tr><th>Metric</th><th>Mean</th><th>Min</th><th>Max</th></tr>`;
-      for (const [k, v] of Object.entries(data.aggregate)) {
-        if (typeof v === "object" && v.mean !== undefined) {
-          html += `<tr><td>${k}</td><td>${v.mean}</td><td>${v.min}</td><td>${v.max}</td></tr>`;
-        } else {
-          html += `<tr><td>${k}</td><td colspan="3">${v}</td></tr>`;
-        }
-      }
-      html += `</table>`;
-      benchResults.innerHTML = html;
-    } catch (e) {
-      benchResults.innerHTML = `<p class="status error">${e.message}</p>`;
-    }
-    benchBtn.disabled = false;
-  });
-
   // ── Sidebar refresh ─────────────────────────────────────────────────────
   async function refreshSidebar() {
     try {
@@ -295,7 +286,6 @@
   async function loadSession(sid) {
     currentSession = sid;
     queryBtn.disabled = false;
-    benchBtn.disabled = false;
     refreshSidebar();
   }
 
@@ -307,9 +297,7 @@
     fileInput.value = "";
     uploadBtn.disabled = true;
     queryBtn.disabled = true;
-    benchBtn.disabled = true;
     resultsArea.innerHTML = "";
-    benchResults.innerHTML = "";
     uploadStatus.innerHTML = "";
     refreshSidebar();
   });

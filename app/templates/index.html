@@ -64,13 +64,13 @@
         <label>Select Model</label>
         <div class="searchable-dropdown-wrapper">
           <input type="text" id="modelSearch" class="model-search" placeholder="Search models …">
-          <select id="modelSelect">
-            <option value="">-- Choose a model --</option>
+          <select id="modelSelect" multiple hidden>
             {% for m in models %}
             <option value="{{ m.id }}">{{ m.name }}</option>
             {% endfor %}
           </select>
           <div id="modelDropdown" class="dropdown-list"></div>
+          <div id="selectedModels" class="selected-models-display"></div>
         </div>
       </div>
     </div>
@@ -112,28 +112,6 @@
 
   <!-- Results Section -->
   <div id="resultsArea"></div>
-
-  <!-- Benchmark Section -->
-  <section class="card" id="benchmarkSection">
-    <h2>3 · Full Benchmark Run</h2>
-    <p class="muted">Runs all extracted ground-truth Q&amp;A pairs against a selected model.</p>
-    <div class="param-grid">
-      <div class="param">
-        <label>Model</label>
-        <select id="benchModel">
-          {% for m in models %}
-          <option value="{{ m.id }}">{{ m.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="param">
-        <label>Max Questions</label>
-        <input type="number" id="maxQuestions" value="10" min="1" max="100">
-      </div>
-    </div>
-    <button id="benchBtn" class="btn btn-primary" disabled>Run Benchmark</button>
-    <div id="benchResults"></div>
-  </section>
 </main>
 
 <script src="/static/js/app.js"></script>
