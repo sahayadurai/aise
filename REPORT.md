@@ -9,12 +9,19 @@
 This comprehensive report documents the design and implementation of a **Retrieval-Augmented Generation (RAG) Benchmarking System** built as a FastAPI application with PostgreSQL persistence. The system enables users to upload PDF documents, configure hyperparameters for text and image extraction, build FAISS vector indices, query multiple LLM models via OpenRouter, and evaluate response quality using established NLP benchmarking metrics.
 
 **Key Features:**
-- ✅ Multi-model RAG pipeline with FastAPI
-- ✅ PostgreSQL persistent storage with SQLAlchemy ORM
-- ✅ Automated benchmarking with 8 evaluation metrics
-- ✅ Containerized with Docker for easy deployment
-- ✅ Single-command setup via `run.sh` script
-- ✅ Support for text, image, and table extraction from PDFs
+- [OK] Multi-model RAG pipeline with FastAPI
+- [OK] PostgreSQL persistent storage with SQLAlchemy ORM
+- [OK] Automated benchmarking with 8 evaluation metrics
+- [OK] Containerized with Docker for easy deployment
+- [OK] Single-command setup via `run.sh` script
+- [OK] Support for text, image, and table extraction from PDFs
+
+**Latest Optimizations (v1.2.0):**
+- [OK] Consolidated all setup functionality into single `run.sh` script
+- [OK] Cleaned Dockerfile (removed comments for production efficiency)
+- [OK] Merged all documentation files into unified REPORT.md
+- [OK] Removed redundant setup scripts and duplicate documentation
+- [OK] Production-ready, minimal project footprint
 
 The architecture follows a modular pipeline pattern with separate components for extraction, embedding, retrieval, generation, evaluation, and data persistence.
 
@@ -433,13 +440,13 @@ sessions (root)
 
 **Benefits of This Approach:**
 
-✅ **Durability**: Data persists across server restarts
-✅ **Scalability**: Support multiple concurrent users
-✅ **Queryability**: SQL queries on chat history and benchmarks
-✅ **Efficiency**: Filesystem for large files, DB for relationships
-✅ **Integrity**: Foreign keys maintain referential integrity
-✅ **Backups**: Standard PostgreSQL tools available
-✅ **Performance**: Indexed queries on frequently accessed data
+[OK] **Durability**: Data persists across server restarts
+[OK] **Scalability**: Support multiple concurrent users
+[OK] **Queryability**: SQL queries on chat history and benchmarks
+[OK] **Efficiency**: Filesystem for large files, DB for relationships
+[OK] **Integrity**: Foreign keys maintain referential integrity
+[OK] **Backups**: Standard PostgreSQL tools available
+[OK] **Performance**: Indexed queries on frequently accessed data
 
 ### 8.4 Database Initialization
 
@@ -639,11 +646,11 @@ The main `run.sh` script includes all database setup:
 ```
 
 This handles:
-- ✅ PostgreSQL installation check
-- ✅ PostgreSQL server startup
-- ✅ Database creation
-- ✅ Dependency installation
-- ✅ Server launch
+- [OK] PostgreSQL installation check
+- [OK] PostgreSQL server startup
+- [OK] Database creation
+- [OK] Dependency installation
+- [OK] Server launch
 
 #### Option B: Manual Setup
 
@@ -1030,91 +1037,6 @@ flowchart TD
 ---
 
 ## 13. DIRECTORY STRUCTURE
-│   ├── llm_client.py         # OpenRouter client
-│   ├── benchmarks.py         # Evaluation metrics
-│   ├── main.py               # FastAPI application
-│   ├── templates/
-│   │   └── index.html        # Web UI template
-│   └── static/
-│       ├── css/style.css     # Stylesheet
-│       └── js/app.js         # Frontend logic
-└── data/
-    ├── uploads/              # Uploaded PDFs
-    ├── indices/              # FAISS + PKL files
-    ├── results/              # Benchmark results
-    └── chats/                # Chat persistence
-```
-
----
-
-## 10. How to Run
-
-### 10.1 Prerequisites
-
-- Python 3.9 or higher
-- An OpenRouter API key (get one at [https://openrouter.ai](https://openrouter.ai))
-- ~2 GB disk space for models and dependencies
-
-### 10.2 Quick Start
-
-```bash
-# 1. Clone or copy the project
-cd rag-benchmark-system
-
-# 2. Run the setup script (creates venv, installs deps, launches server)
-chmod +x setup_and_run.sh
-./setup_and_run.sh run
-
-# 3. Open in browser
-#    http://localhost:8000
-```
-
-### 10.3 Setup Only (without auto-launch)
-
-```bash
-./setup_and_run.sh setup
-
-# Then manually activate and run:
-source venv/bin/activate
-export OPENROUTER_API_KEY="sk-or-v1-your-key"
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### 10.4 Configuration
-
-Edit `.env` to set your API key and preferences:
-
-```env
-OPENROUTER_API_KEY=sk-or-v1-your-key-here
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
-EMBEDDING_MODEL=all-MiniLM-L6-v2
-HOST=0.0.0.0
-PORT=8000
-```
-
----
-
-## 11. End-to-End Workflow
-
-```mermaid
-flowchart TD
-    A["Step 1: Launch Server\n./setup_and_run.sh run"] --> B["Step 2: Open Browser\nhttp://localhost:8000"]
-    B --> C["Step 3: Upload PDFs\nDrag & drop or browse"]
-    C --> D["Step 4: Configure Hyperparameters\nchunk_size, overlap, etc."]
-    D --> E["Step 5: Click Upload & Index\nBuilds FAISS + extracts GT"]
-    E --> F["Step 6: Select Models\nChoose 1+ from dropdown"]
-    F --> G["Step 7: Enter Query\nType question in textarea"]
-    G --> H["Step 8: View Results\nAnswers + sources per model"]
-    H --> I{"Run Benchmark?"}
-    I -->|"Yes"| J["Step 9: Full Benchmark\nAll GT pairs evaluated"]
-    I -->|"No"| K["Step 9: Continue Querying"]
-    J --> L["Step 10: Review Metrics\nBLEU, ROUGE-L, MRR, etc."]
-    K --> G
-```
-
----
-
-## 13. DIRECTORY STRUCTURE
 
 ```
 rag-benchmark-system/
@@ -1410,8 +1332,15 @@ python -m uvicorn app.main:app              # Production
 
 ---
 
-*Report generated for academic evaluation and production deployment. System version 1.1.0 with PostgreSQL persistence and Docker support.*
+*Report generated for academic evaluation and production deployment. System version 1.2.0 with PostgreSQL persistence, Docker containerization, and production-ready cleanup.*
 
 **Last Updated**: May 2026
-**Status**: Production Ready
+**Status**: Production Ready [OK]
+**Key Optimizations**: 
+- Removed all setup script dependencies (consolidated into `run.sh`)
+- Cleaned Dockerfile (removed comments for production efficiency)
+- Merged all documentation into single REPORT.md
+- Removed redundant files (setup_postgres.sh, 5 separate .md files)
+
 **Deployment Options**: Standalone, Docker, Docker Compose
+**Execution**: Single command - `./run.sh`

@@ -61,27 +61,41 @@
     <h2>2 · Query &amp; Compare Models</h2>
     <div class="param-grid">
       <div class="param span-2">
-        <label>Select Models</label>
-        <div id="modelCheckboxes" class="checkbox-grid">
-          {% for m in models %}
-          <label class="cb-label">
-            <input type="checkbox" name="model" value="{{ m.id }}">
-            <span>{{ m.name }}</span>
-          </label>
-          {% endfor %}
+        <label>Select Model</label>
+        <div class="searchable-dropdown-wrapper">
+          <input type="text" id="modelSearch" class="model-search" placeholder="Search models …">
+          <select id="modelSelect">
+            <option value="">-- Choose a model --</option>
+            {% for m in models %}
+            <option value="{{ m.id }}">{{ m.name }}</option>
+            {% endfor %}
+          </select>
+          <div id="modelDropdown" class="dropdown-list"></div>
         </div>
       </div>
-      <div class="param">
+    </div>
+
+    <div class="param-grid">
+      <div class="param-with-slider">
         <label>Top-K</label>
-        <input type="number" id="topK" value="5" min="1" max="50">
+        <div class="input-slider-wrapper">
+          <input type="range" id="topKSlider" min="1" max="50" value="5" class="slider">
+          <input type="number" id="topK" value="5" min="1" max="50" class="slider-value">
+        </div>
       </div>
-      <div class="param">
+      <div class="param-with-slider">
         <label>Cosine Threshold</label>
-        <input type="number" id="cosineThreshold" value="0.0" min="0" max="1" step="0.05">
+        <div class="input-slider-wrapper">
+          <input type="range" id="cosineThresholdSlider" min="0" max="1" step="0.05" value="0.0" class="slider">
+          <input type="number" id="cosineThreshold" value="0.0" min="0" max="1" step="0.05" class="slider-value">
+        </div>
       </div>
-      <div class="param">
+      <div class="param-with-slider">
         <label>Temperature</label>
-        <input type="number" id="temperature" value="0.3" min="0" max="2" step="0.1">
+        <div class="input-slider-wrapper">
+          <input type="range" id="temperatureSlider" min="0" max="2" step="0.1" value="0.3" class="slider">
+          <input type="number" id="temperature" value="0.3" min="0" max="2" step="0.1" class="slider-value">
+        </div>
       </div>
       <div class="param">
         <label class="cb-label">

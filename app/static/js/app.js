@@ -28,6 +28,58 @@
   const benchBtn     = $("#benchBtn");
   const benchResults = $("#benchResults");
 
+  const modelSelect = $("#modelSelect");
+  const modelSearch = $("#modelSearch");
+  const modelDropdown = $("#modelDropdown");
+
+  // ── Searchable Dropdown ─────────────────────────────────────────────────
+  function populateDropdown() {
+    const options = [...modelSelect.options].slice(1);
+    const searchTerm = modelSearch.value.toLowerCase();
+    modelDropdown.innerHTML = "";
+    options
+      .filter(opt => opt.text.toLowerCase().includes(searchTerm))
+      .forEach(opt => {
+        const div = document.createElement("div");
+        div.className = "dropdown-item";
+        if (opt.value === modelSelect.value) div.classList.add("selected");
+        div.textContent = opt.text;
+        div.addEventListener("click", () => {
+          modelSelect.value = opt.value;
+          modelSearch.value = opt.text;
+          modelDropdown.classList.remove("active");
+        });
+        modelDropdown.appendChild(div);
+      });
+  }
+
+  modelSearch.addEventListener("focus", () => {
+    populateDropdown();
+    modelDropdown.classList.add("active");
+  });
+
+  modelSearch.addEventListener("input", populateDropdown);
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".searchable-dropdown-wrapper")) {
+      modelDropdown.classList.remove("active");
+    }
+  });
+
+  // ── Slider & Input Sync ─────────────────────────────────────────────────
+  const sliderPairs = [
+    { slider: "#topKSlider", input: "#topK" },
+    { slider: "#cosineThresholdSlider", input: "#cosineThreshold" },
+    { slider: "#temperatureSlider", input: "#temperature" }
+  ];
+
+  sliderPairs.forEach(pair => {
+    const slider = $(pair.slider);
+    const input = $(pair.input);
+    slider.addEventListener("input", () => { input.value = slider.value; });
+    input.addEventListener("input", () => { slider.value = input.value; });
+  });
+
   // ── Sidebar toggle ──────────────────────────────────────────────────────
   sidebarToggle.addEventListener("click", () => sidebar.classList.toggle("open"));
 
@@ -100,8 +152,8 @@
     const query = queryInput.value.trim();
     if (!query || !currentSession) return;
 
-    const models = $$('input[name="model"]:checked').map(cb => cb.value);
-    if (!models.length) { alert("Select at least one model"); return; }
+    const selectedModel = $("#modelSelect").value;
+    if (!selectedModel) { alert("Select a model"); return; }
 
     queryBtn.disabled = true;
     resultsArea.innerHTML = '<div class="card"><span class="loading"></span> Querying models …</div>';
@@ -109,7 +161,7 @@
     const fd = new FormData();
     fd.append("query", query);
     fd.append("session_id", currentSession);
-    fd.append("models", models.join(","));
+    fd.append("models", selectedModel);
     fd.append("top_k", $("#topK").value);
     fd.append("cosine_threshold", $("#cosineThreshold").value);
     fd.append("temperature", $("#temperature").value);

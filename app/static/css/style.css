@@ -86,6 +86,33 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text);
 .bench-table th,.bench-table td{border:1px solid var(--border);padding:.3rem .5rem;text-align:left}
 .bench-table th{background:var(--bg)}
 
+/* ── Searchable Dropdown ──────────────────────────────────────────────── */
+.searchable-dropdown-wrapper{position:relative}
+.model-search{width:100%;padding:.4rem .5rem;border:1px solid var(--border);
+              border-radius:var(--radius);font-size:.9rem;margin-bottom:.25rem}
+#modelSelect{display:none}
+.dropdown-list{position:absolute;top:100%;left:0;right:0;background:var(--surface);
+               border:1px solid var(--border);border-radius:var(--radius);
+               max-height:200px;overflow-y:auto;z-index:100;
+               display:none;box-shadow:0 4px 6px rgba(0,0,0,.1)}
+.dropdown-list.active{display:block}
+.dropdown-item{padding:.5rem .75rem;cursor:pointer;font-size:.9rem}
+.dropdown-item:hover,.dropdown-item.selected{background:var(--accent-light)}
+.dropdown-item.selected{color:var(--accent);font-weight:500}
+
+/* ── Slider ───────────────────────────────────────────────────────────── */
+.param-with-slider{display:flex;flex-direction:column}
+.input-slider-wrapper{display:flex;gap:.5rem;align-items:center}
+.slider{flex:1;height:6px;border-radius:3px;background:var(--border);
+        outline:none;-webkit-appearance:none;appearance:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+                              width:18px;height:18px;border-radius:50%;
+                              background:var(--accent);cursor:pointer}
+.slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;
+                          background:var(--accent);cursor:pointer;border:none}
+.slider-value{width:70px;padding:.4rem .5rem;border:1px solid var(--border);
+              border-radius:var(--radius);font-size:.9rem;text-align:center}
+
 /* ── Status / Misc ────────────────────────────────────────────────────── */
 .status{margin-top:.5rem;font-size:.85rem;color:var(--muted)}
 .status.error{color:var(--danger)}
